@@ -128,6 +128,12 @@ GND is the ground pin.
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include"stdio.h"
+#if defined(_GNUC_)
+
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#endif
+uint16_t analogvalue;
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -211,9 +217,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+	  HAL_ADC_Start(&hadc);
 
-    /* USER CODE BEGIN 3 */
+	  HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY);
+	      analogvalue = HAL_ADC_GetValue(&hadc);
+	      printf("Analog value : %ld\n", analogvalue);
+
+	      uint32_t soilmoist = (100*analogvalue) / 4095;
+	      printf("Soil moisture : %ld %%\n", soilmoist);
+	      HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -422,8 +434,6 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 ```
-
-
 
 ## Output screen shots on serial monitor   :
 ![WhatsApp Image 2025-05-08 at 10 33 13_3e32fbfb](https://github.com/user-attachments/assets/043afbc8-4367-4fe0-b7ac-b2cf3d1c3cd2)
